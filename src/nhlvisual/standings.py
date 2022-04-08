@@ -20,8 +20,16 @@ def read_json(json_data, mode='prod'):
     return data
 
 
-def parse_standings(data):
-    pass
+def parse_standings(team_data):
+    row = dict()
+    row['id'] = team_data['team']['id']
+    row['name'] = team_data['team']['name']
+    row['gp'] = team_data['gamesPlayed']
+    row['wins'] = team_data['leagueRecord']['wins']
+    row['losses'] = team_data['leagueRecord']['losses']
+    row['ot'] = team_data['leagueRecord']['ot']
+    row['pt_pcg'] = team_data['pointsPercentage']
+    return row
 
 
 def main():
@@ -39,7 +47,12 @@ def main():
     else:
         source_data = 'src/nhlvisual/data/standings.json'
     loaded_data = read_json(source_data, mode=mode)['records']
-    print(type(loaded_data))
+
+    records = []
+    for division in loaded_data:
+        for t in division['teamRecords']:
+            record = parse_standings(t)
+            records.append(record)
 
 
 if __name__ == "__main__":
