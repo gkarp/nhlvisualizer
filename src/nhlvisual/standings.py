@@ -1,23 +1,7 @@
 import argparse
-import json
-import requests
 
-
-def get_standings(url):
-    r = requests.get(url)
-    data = r.json()
-    return data
-
-
-def read_json(json_data, mode='prod'):
-    if mode == 'prod':
-        data = json.loads(json_data)  # TO DO: inout is dict
-    elif mode == 'dev':
-        with open(json_data, 'r') as f:
-            data = json.load(f)
-    else:
-        raise ValueError("Invalid input for parameter 'mode'.")
-    return data
+from constants import STANDINGS_URL
+from common import get_data, read_json
 
 
 def parse_standings(team_data):
@@ -41,9 +25,9 @@ def main():
 
     args = parser.parse_args()
     mode = args.mode
-    standings_url = "https://statsapi.web.nhl.com/api/v1/standings"
+
     if mode == 'prod':
-        source_data = get_standings(standings_url)
+        source_data = get_data(STANDINGS_URL)
     else:
         source_data = 'src/nhlvisual/data/standings.json'
     loaded_data = read_json(source_data, mode=mode)['records']
